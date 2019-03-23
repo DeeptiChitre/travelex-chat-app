@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        Chat App
+    </title>
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <script src="./socket.io/socket.io.js"></script>
+    </link>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center text-primary"></h1>
+    </div>
+    <form class="well">
+        <textarea readonly id="tamsg">
+        </textarea>
+        <div class="row">
+            <input type="text" class="col-sm-10" id="txtinput">
+            <input type="button" id="btnSend" value="Send">
+        </div>
+    </form>
+</body>
+<script>
+    $(document).ready(() => {
+        var chatterName = prompt("Chat name pls");
+        var socket = io.connect("/");
+        socket.on("acknowledge", (msg) => {
+            //  msg = $("#txtinput").val()
+            alert("server says " + msg);
+        })
+        $("#btnSend").on("click", event => {
+            
+             event.preventDefault();
+             msg = $("#txtinput").val()
+            // alert(msg);
+             socket.emit("msgToServer", chatterName, msg)
+             $("#txtinput").val('');
+        })
+        socket.on("servermsg", (chatter, msg) => {
+            $("#tamsg").append(chatter + ":" + msg + "\n");
+        })
+    })
+</script>
+
+</html>
